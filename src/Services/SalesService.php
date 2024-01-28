@@ -5,8 +5,14 @@ namespace Src\Services;
 use Src\Repositories\SaleRepository;
 
 class SalesService
-{
-    public function list(array $conditions = [])
+{    
+    /**
+     * list with conditions and total calculation.
+     *
+     * @param  mixed $conditions
+     * @return array
+     */
+    public function list(array $conditions = []): array
     {
         try {
             $lists = SaleRepository::list($conditions);

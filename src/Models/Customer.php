@@ -8,27 +8,44 @@ class Customer extends BaseModel
     {
         parent::__construct();
     }
-
-    public function getCustomerByEmail(string $email)
+    
+    /**
+     * get Customer records filter by email and return result array.
+     *
+     * @param  string $email
+     * @return array
+     */
+    public function getCustomerByEmail(string $email): array
     {
-        $response = [];
-        $sql = "SELECT * FROM customers WHERE email = ?";
-       
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        try {
+            $response = [];
+            $sql = "SELECT * FROM customers WHERE email = ?";
         
-        while ($row = $result->fetch_assoc()) {
-            $response [] = $row;
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            while ($row = $result->fetch_assoc()) {
+                $response [] = $row;
+            }
+
+            $stmt->close();
+            
+            return $response;
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        $stmt->close();
-        
-        return $response;
     }
-
-    public function customerInsert(string $name, string $email): int
+    
+    /**
+     * add new Customer and return newly inserted id.
+     *
+     * @param  string $name
+     * @param  string $email
+     * @return int
+     */
+    public function addCustomer(string $name, string $email): int
     {
         try {
             $query = "INSERT INTO customers (name, email) VALUES (?, ?)";

@@ -8,26 +8,49 @@ class Sale extends BaseModel
     {
         parent::__construct();
     }
-
-    public function getSaleDetails(int $productId, int $customerId, string $saleDate)
+    
+    /**
+     * get sale records filter with product, customer and saleDate
+     * and return result array.
+     *
+     * @param  int $productId
+     * @param  int $customerId
+     * @param  string $saleDate
+     * @return array
+     */
+    public function getSaleDetails(int $productId, int $customerId, string $saleDate): array
     {
-        $response = [];
-        $sql = "SELECT * FROM sales WHERE product_id = ? AND customer_id = ? AND sale_date = ?";
-       
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("iis", $productId, $customerId, $saleDate);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        try {
+            $response = [];
+            $sql = "SELECT * FROM sales WHERE product_id = ? AND customer_id = ? AND sale_date = ?";
         
-        while ($row = $result->fetch_assoc()) {
-            $response [] = $row;
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param("iis", $productId, $customerId, $saleDate);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            while ($row = $result->fetch_assoc()) {
+                $response [] = $row;
+            }
+
+            $stmt->close();
+            
+            return $response;
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        $stmt->close();
-        
-        return $response;
     }
-
+    
+    /**
+     * add new sale record and return new inserted id.
+     *
+     * @param  int $productId
+     * @param  int $customerId
+     * @param  int $priceId
+     * @param  string $salesDate
+     * @param  string $timeZone
+     * @return int
+     */
     public function addSale(int $productId, int $customerId, int $priceId, string $salesDate, string $timeZone = ''): int
     {
         try {
@@ -47,8 +70,16 @@ class Sale extends BaseModel
             throw $th;
         }
     }
-
-    public function getSalesList(array $bindParam = [], array $bindValues = [], string $bindType = '')
+    
+    /**
+     * sales records with bind-params, bind-values and bind-types
+     *
+     * @param  array $bindParam
+     * @param  array $bindValues
+     * @param  string $bindType
+     * @return array
+     */
+    public function getSalesList(array $bindParam = [], array $bindValues = [], string $bindType = ''): array
     {
         try {
             $query = "SELECT sales.*, customers.`name` as customer, products.`name` as product, prices.price FROM sales ";

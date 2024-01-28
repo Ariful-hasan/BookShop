@@ -9,7 +9,13 @@ use Src\Repositories\ProductRepository;
 use Src\Repositories\SaleRepository;
 
 class ImportService
-{
+{    
+    /**
+     * import sales records.
+     *
+     * @param  string $filePath
+     * @return void
+     */
     public static function import(string $filePath): void
     {
         if (empty($filePath) || !file_exists($filePath)) {

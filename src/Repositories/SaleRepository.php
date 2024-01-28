@@ -6,7 +6,17 @@ use Src\Models\Sale;
 use Src\Utils\DateComparator;
 
 class SaleRepository
-{
+{    
+    /**
+     * add new sale record and return inserted/existed id.
+     *
+     * @param  array $data
+     * @param  int $productId
+     * @param  int $customerId
+     * @param  int $priceId
+     * @param  string $saleDate
+     * @return int
+     */
     public static function saveSale(array $data, int $productId, int $customerId, int $priceId, string $saleDate): int
     {
         $sale = new Sale();
@@ -19,8 +29,14 @@ class SaleRepository
 
         return $saleId;
     }
-
-    public static function list(array $conditions = [])
+    
+    /**
+     * list of all sales records with filter.
+     *
+     * @param  array $conditions
+     * @return array
+     */
+    public static function list(array $conditions = []): array
     {
         $bindParam = [];
         $bindValues = [];

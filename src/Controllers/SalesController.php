@@ -13,7 +13,12 @@ class SalesController
     {
         $this->service = new SalesService();
     }
-
+    
+    /**
+     * get sales records.
+     *
+     * @return void
+     */
     public function index()
     {
         try {

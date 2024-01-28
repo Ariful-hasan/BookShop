@@ -2,34 +2,52 @@
 
 namespace Src\Models;
 
-use DateTime;
-
 class Price extends BaseModel
 {
     public function  __construct()
     {
         parent::__construct();
     }
-
-    public function getPrice(int $productId, string $validTo)
+    
+    /**
+     * get all price records filter with product and valid date
+     * and return result array.
+     *
+     * @param  int $productId
+     * @param  string $validTo
+     * @return array
+     */
+    public function getPrice(int $productId, string $validTo): array
     {
-        $response = [];
-        $sql = "SELECT * FROM prices WHERE product_id = ? AND valid_to = ?";
-       
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("is", $productId, $validTo);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        try {
+            $response = [];
+            $sql = "SELECT * FROM prices WHERE product_id = ? AND valid_to = ?";
         
-        while ($row = $result->fetch_assoc()) {
-            $response [] = $row;
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param("is", $productId, $validTo);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            while ($row = $result->fetch_assoc()) {
+                $response [] = $row;
+            }
+
+            $stmt->close();
+            
+            return $response;
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        $stmt->close();
-        
-        return $response;
     }
-
+    
+    /**
+     * add new Price and return newly inserted id.
+     *
+     * @param  int $productId
+     * @param  float $price
+     * @param  string $validTo
+     * @return int
+     */
     public function addPrice(int $productId, float $price, string $validTo): int
     {
         try {
